@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bankapp
+  namespace: bankapp-ns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: bankapp
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: bankapp
+    spec:
+      containers:
+      - name: bankapp
+        image: cloudwithrk/bankapp:latest
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: SPRING_DATASOURCE_URL
+              name: bankconfig
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: SPRING_DATASOURCE_USERNAME
+              name: bankconfig
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: SPRING_DATASOURCE_PASSWORD
+              name: banksecret
+        resources:
+          requests:
+            memory: "512Mi"   # Minimum 512 MB RAM required to run
+            cpu: "250m"       # Minimum 0.25 CPU cores (250 millicores)
+          limits:
+            memory: "1Gi"     # Maximum 1 GB RAM allowed
+            cpu: "500m"       # Maximum 0.5 CPU cores allowed
+        # livenessProbe:
+        #   httpGet:
+        #     path: /actuator/health
+        #     port: 8080
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /actuator/health
+        #     port: 8080
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+
+        ports:
+        - containerPort: 8080

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv 
+  labels:
+    app: bankapp-pv
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain 
+  hostPath:
+    path: /mnt/data/mysql
+    type: DirectoryOrCreate
+  storageClassName: standard
+
+   

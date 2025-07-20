@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bankapp-svc
+  namespace: bank-ns
+spec:
+  selector:
+    app: bankapp-deploy       # Must match label in your pod/deployment
+  type: NodePort
+  ports:
+    - name: bankapp
+      protocol: TCP
+      port: 8080              # Service port (inside cluster)
+      targetPort: 8080        # Pod/container port
+      nodePort: 30080         # Exposed on every node IP at this port
+  sessionAffinity: None       # No sticky sessions
