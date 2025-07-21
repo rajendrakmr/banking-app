@@ -1,0 +1,11 @@
+eksctl create nodegroup \
+  --cluster=bankapp \
+  --region=eu-west-1 \
+  --name=bankapp-ng \
+  --node-type=t2.medium \
+  --nodes=2 \
+  --nodes-min=1 \
+  --nodes-max=2 \
+  --node-volume-size=15 \
+  --ssh-access \
+  --ssh-public-key=bankapp
