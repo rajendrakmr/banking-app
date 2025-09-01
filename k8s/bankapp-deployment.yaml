@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bankapp-deploy
+  namespace: bank-ns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bankapp-deploy
+  template:
+    metadata:
+      labels:
+        app: bankapp-deploy
+    spec:
+      containers:
+      - name: myapp
+        image: rk0617/bank-app:v1
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "256Mi"
+            cpu: "1000m"
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: bankapp-config
+              key: SPRING_DATASOURCE_URL
+
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: bankapp-config
+              key: SPRING_DATASOURCE_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bank-secret
+              key: SPRING_DATASOURCE_PASSWORD
+        
+        # readinessProbe:
+        #   httpGet:
+        #     path: /actuator/health  # Update this based on your app's health endpoint
+        #     port: 8080
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /actuator/health  # Update this based on your app's health endpoint
+        #     port: 8080
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10

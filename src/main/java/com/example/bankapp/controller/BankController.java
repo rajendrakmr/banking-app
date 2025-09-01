@@ -9,14 +9,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.http.ResponseEntity;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Controller
 public class BankController {
 
     @Autowired
     private AccountService accountService;
+    @GetMapping("/actuator/health")
+    public ResponseEntity<Map<String, String>> healthCheck() {
+        return ResponseEntity.ok(Map.of("status", "OK"));
+    }
+
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
